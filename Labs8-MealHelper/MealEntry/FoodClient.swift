@@ -73,100 +73,42 @@ class FoodClient {
     
     func postMeal(with userCredentials: User, mealTime: String, experience: String?, date: String, completion: @escaping (Response<Int>) -> ()) {
         let url = self.url(with: baseUrl, pathComponents: ["users", userId, "meals"])
+        let reqBody = [
+            "user_id": userId,
+            "mealTime": mealTime,
+            "experience": experience,
+            "date": date
+        ]
         
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = HTTPMethod.post.rawValue
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let ingredientDetails = [
-                "user_id": userId,
-                "mealTime": mealTime,
-                "experience": experience,
-                "date": date
-            ]
+        post(with: url, requestBody: reqBody) { (response: Int?, error: Error?) in
+            if let error = error {
+                completion(Response.error(error))
+                return
+            }
             
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let ingredientJson = try encoder.encode(ingredientDetails)
-            urlRequest.httpBody = ingredientJson
-        } catch {
-            NSLog("Failed to encode ingredients: \(error)")
-            completion(Response.error(error))
-            return
+            if let response = response {
+                completion(Response.success(response))
+            }
         }
         
-        URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
-            
-            if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
-                completion(Response.error(error))
-                return
-            }
-            
-            guard let data = data else {
-                NSLog("No data returned")
-                completion(Response.error(NSError()))
-                return
-            }
-            
-            do {
-                // TODO: Handle response. Note: backend response objects change with each request. Backend should standardize success and failure responses.
-                //let ingredientId = try JSONDecoder().decode(Int.self, from: data)
-                completion(Response.success(1))
-            } catch {
-                NSLog("Error decoding data: \(error)")
-                completion(Response.error(error))
-                return
-            }
-        }.resume()
     }
     
     
     func postIngredient(with userCredentials: User, name: String, nutrientId: String?, completion: @escaping (Response<Int>) -> ()) {
         let url = self.url(with: baseUrl, pathComponents: ["ingredients", userId])
+        let reqBody = ["name": name, "nutrients_id": nutrientId]
         
-        var urlRequest = URLRequest(url: url)
-        urlRequest.httpMethod = HTTPMethod.post.rawValue
-        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        do {
-            let ingredientDetails = ["name": name, "nutrients_id": nutrientId]
+        post(with: url, requestBody: reqBody) { (response: Int?, error: Error?) in
+            if let error = error {
+                completion(Response.error(error))
+                return
+            }
             
-            let encoder = JSONEncoder()
-            encoder.outputFormatting = .prettyPrinted
-            let ingredientJson = try encoder.encode(ingredientDetails)
-            urlRequest.httpBody = ingredientJson
-        } catch {
-            NSLog("Failed to encode ingredients: \(error)")
-            completion(Response.error(error))
-            return
+            if let response = response {
+                completion(Response.success(response))
+            }
         }
         
-        URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
-            
-            if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
-                completion(Response.error(error))
-                return
-            }
-            
-            guard let data = data else {
-                NSLog("No data returned")
-                completion(Response.error(NSError()))
-                return
-            }
-            
-            do {
-                // TODO: Handle response. Note: backend response objects change with each request. Backend should standardize success and failure responses.
-                //let ingredientId = try JSONDecoder().decode(Int.self, from: data)
-                completion(Response.success(1))
-            } catch {
-                NSLog("Error decoding data: \(error)")
-                completion(Response.error(error))
-                return
-            }
-        }.resume()
     }
     
     // MARK: USDA
@@ -214,7 +156,7 @@ class FoodClient {
                 return
             }
             
-            }.resume()
+        }.resume()
     }
     
     // MARK: - Private
@@ -243,6 +185,49 @@ class FoodClient {
                 return
             }
             
+        }.resume()
+    }
+    
+    private func post<Resource: Codable>(with url: URL, requestBody: Dictionary<String, String?>, using session: URLSession = URLSession.shared, completion: @escaping (Resource?, Error?) -> Void) {
+        
+        var urlRequest = URLRequest(url: url)
+        urlRequest.httpMethod = HTTPMethod.post.rawValue
+        urlRequest.addValue("application/json", forHTTPHeaderField: "Content-Type")
+        
+        do {
+            let requestBody = requestBody
+            let encoder = JSONEncoder()
+            encoder.outputFormatting = .prettyPrinted
+            let requestBodyJson = try encoder.encode(requestBody)
+            urlRequest.httpBody = requestBodyJson
+        } catch {
+            NSLog("Failed to encode foods: \(error)")
+            completion(nil, error)
+            return
+        }
+        
+        URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
+            
+            if let error = error {
+                NSLog("Error with urlReqeust: \(error)")
+                completion(nil, error)
+                return
+            }
+            
+            guard let data = data else {
+                NSLog("No data returned")
+                completion(nil, error)
+                return
+            }
+            
+            do {
+                let response = try JSONDecoder().decode(Resource.self, from: data)
+                completion(response, nil)
+            } catch {
+                NSLog("Error decoding data: \(error)")
+                completion(nil, error)
+                return
+            }
         }.resume()
     }
     

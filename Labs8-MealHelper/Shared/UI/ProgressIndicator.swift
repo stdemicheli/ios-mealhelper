@@ -25,6 +25,7 @@ class ProgressIndicator: UIView {
         }
         return CGFloat(progressValue) / CGFloat(goalValue)
     }
+    var label: String!
     var animationDuration: CFTimeInterval!
     var fontSize: CGFloat = 20.0
     var fontColor = UIColor.white
@@ -39,11 +40,12 @@ class ProgressIndicator: UIView {
     
     // MARK: - Init
     
-    init(frame: CGRect, progress: Double, goal: Double, animationDuration: CFTimeInterval? = 1.2) {
+    init(frame: CGRect, progress: Double, goal: Double, label: String? = "", animationDuration: CFTimeInterval? = 1.2) {
         super.init(frame: frame)
         self.progressValue = progress
         self.goalValue = goal
         self.animationDuration = animationDuration
+        self.label = label
         setupViews()
         animateProgress()
     }
@@ -110,7 +112,7 @@ class ProgressIndicator: UIView {
         addSubview(metricLabel)
         
         descriptionLabel.font = UIFont.systemFont(ofSize: fontSize)
-        descriptionLabel.text = "Calories Left"
+        descriptionLabel.text = label
         descriptionLabel.textColor = fontColor
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         addSubview(descriptionLabel)

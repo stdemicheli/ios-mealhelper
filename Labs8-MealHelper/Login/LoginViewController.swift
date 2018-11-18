@@ -285,10 +285,11 @@ class LoginViewController: UIViewController
                 switch response {
                 case .success(let email):
                     print("Login with \(email) completed")
+                    // TODO: Return user object instead of only email and save userId to UserDefaults:
+                    // UserDefaults().setIsLoggedIn(value: true, userId: <#T##Int#>)
                     let homeVC = HomeViewController()
                     self.present(homeVC, animated: true, completion: nil)
                 case .error(let error):
-                    NSLog("Error logging in user: \(error)")
                     self.showAlert(with: "Something went wrong, please make sure you entered the right credentials and try again.")
                     self.authButton.stopLoading()
                     return

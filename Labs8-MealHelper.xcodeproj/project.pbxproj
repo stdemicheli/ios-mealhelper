@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D131CD521A198B3009681D0 /* UserDefault+Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D131CD421A198B3009681D0 /* UserDefault+Helper.swift */; };
 		3D56A9D221934FAA00A91EF4 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A9D121934FAA00A91EF4 /* AppDelegate.swift */; };
 		3D56A9D921934FAC00A91EF4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A9D821934FAC00A91EF4 /* Assets.xcassets */; };
 		3D56A9DC21934FAC00A91EF4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 3D56A9DA21934FAC00A91EF4 /* LaunchScreen.storyboard */; };
-		3D56A9F12193504700A91EF4 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A9F02193504700A91EF4 /* Theme.swift */; };
 		3D56A9F8219350EA00A91EF4 /* OnboardingCollectionViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A9F6219350E900A91EF4 /* OnboardingCollectionViewController.swift */; };
 		3D56A9FE21939D3A00A91EF4 /* AutoLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D56A9FD21939D3A00A91EF4 /* AutoLayout.swift */; };
 		3D77DD14219EDA6E009B21ED /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D77DD13219EDA6E009B21ED /* Constants.swift */; };
@@ -87,12 +87,12 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		3D131CD421A198B3009681D0 /* UserDefault+Helper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UserDefault+Helper.swift"; sourceTree = "<group>"; };
 		3D56A9CE21934FAA00A91EF4 /* Labs8-MealHelper.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Labs8-MealHelper.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		3D56A9D121934FAA00A91EF4 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		3D56A9D821934FAC00A91EF4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3D56A9DB21934FAC00A91EF4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		3D56A9DD21934FAC00A91EF4 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		3D56A9F02193504700A91EF4 /* Theme.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 		3D56A9F6219350E900A91EF4 /* OnboardingCollectionViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OnboardingCollectionViewController.swift; sourceTree = "<group>"; };
 		3D56A9FD21939D3A00A91EF4 /* AutoLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AutoLayout.swift; sourceTree = "<group>"; };
 		3D77DD13219EDA6E009B21ED /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
@@ -148,6 +148,39 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3D131CD121A19489009681D0 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				3D77DD19219F111B009B21ED /* ProgressIndicator.swift */,
+				3D77DD16219EF4A8009B21ED /* WeatherForecast.swift */,
+				3D77DD15219EF4A7009B21ED /* WeatherView.swift */,
+				AC8F0B54219E372E00E623FB /* PickerInputField.swift */,
+				AC85F388219E0B2E007765CA /* LoadingButton.swift */,
+				AC85F389219E0B2F007765CA /* LeftIconTextField.swift */,
+				AC62FAC7219B24BA00D8C35C /* GenericTableViewController.swift */,
+				3DB18BE72196FAB800C0E728 /* InputField.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		3D131CD221A1986F009681D0 /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				AC85F38E219E0E1E007765CA /* UIColor+Theme.swift */,
+				3D56A9FD21939D3A00A91EF4 /* AutoLayout.swift */,
+				AC85F392219E1071007765CA /* Extensions.swift */,
+				3D131CD421A198B3009681D0 /* UserDefault+Helper.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		3D131CD321A19881009681D0 /* Config */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Config;
+			sourceTree = "<group>";
+		};
 		3D56A9C521934FAA00A91EF4 = {
 			isa = PBXGroup;
 			children = (
@@ -195,20 +228,11 @@
 		3D56A9ED2193501200A91EF4 /* Shared */ = {
 			isa = PBXGroup;
 			children = (
-				3D77DD19219F111B009B21ED /* ProgressIndicator.swift */,
-				3D77DD16219EF4A8009B21ED /* WeatherForecast.swift */,
-				3D77DD15219EF4A7009B21ED /* WeatherView.swift */,
+				3D131CD321A19881009681D0 /* Config */,
+				3D131CD221A1986F009681D0 /* Extensions */,
+				3D131CD121A19489009681D0 /* UI */,
 				AC8F0B56219E375300E623FB /* Utils.swift */,
 				3D77DD13219EDA6E009B21ED /* Constants.swift */,
-				AC8F0B54219E372E00E623FB /* PickerInputField.swift */,
-				AC85F388219E0B2E007765CA /* LoadingButton.swift */,
-				AC85F389219E0B2F007765CA /* LeftIconTextField.swift */,
-				AC62FAC7219B24BA00D8C35C /* GenericTableViewController.swift */,
-				AC85F38E219E0E1E007765CA /* UIColor+Theme.swift */,
-				3D56A9F02193504700A91EF4 /* Theme.swift */,
-				3D56A9FD21939D3A00A91EF4 /* AutoLayout.swift */,
-				3DB18BE72196FAB800C0E728 /* InputField.swift */,
-				AC85F392219E1071007765CA /* Extensions.swift */,
 			);
 			path = Shared;
 			sourceTree = "<group>";
@@ -406,6 +430,7 @@
 				AC85F3E1219E3526007765CA /* IngredientDetailViewController.swift in Sources */,
 				3DB65F292196200D007AA68A /* Response.swift in Sources */,
 				AC85F38A219E0B2F007765CA /* LoadingButton.swift in Sources */,
+				3D131CD521A198B3009681D0 /* UserDefault+Helper.swift in Sources */,
 				AC85F3C8219E350C007765CA /* Food.swift in Sources */,
 				AC85F3DF219E3526007765CA /* CameraViewController.swift in Sources */,
 				3D56A9F8219350EA00A91EF4 /* OnboardingCollectionViewController.swift in Sources */,
@@ -433,7 +458,6 @@
 				AC85F3E4219E3526007765CA /* FoodsTableViewController.swift in Sources */,
 				3DB65F272196200D007AA68A /* HTTPMethod.swift in Sources */,
 				AC1DE867219473DD0066172C /* HomeViewController.swift in Sources */,
-				3D56A9F12193504700A91EF4 /* Theme.swift in Sources */,
 				AC85F3DB219E3525007765CA /* MealSetupTableViewCell.swift in Sources */,
 				AC62FAD1219B499600D8C35C /* HomeCollectionView.swift in Sources */,
 			);

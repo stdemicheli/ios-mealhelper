@@ -27,6 +27,7 @@ class FoodClient {
     let usdaAPIKey = "c24xU3JZJhbrgnquXUNlyAGXcysBibSmESbE3Nl6"
     let baseUrl: URL = URL(string: "https://labs8-meal-helper.herokuapp.com/")!
     var userId = Constants.User().id
+    //var userId = String(UserDefaults().loggedInUserId())
     
     // MARK: - Meal Helper
     
@@ -165,7 +166,7 @@ class FoodClient {
             }
             
             do {
-                // TODO: Handle response
+                // TODO: Handle response. Note: backend response objects change with each request. Backend should standardize success and failure responses.
                 //let ingredientId = try JSONDecoder().decode(Int.self, from: data)
                 completion(Response.success(1))
             } catch {
@@ -215,7 +216,7 @@ class FoodClient {
             }
             
             do {
-                // TODO: Handle response
+                // TODO: Handle response. Note: backend response objects change with each request. Backend should standardize success and failure responses.
                 //let ingredientId = try JSONDecoder().decode(Int.self, from: data)
                 completion(Response.success(1))
             } catch {

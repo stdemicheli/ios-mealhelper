@@ -47,6 +47,7 @@ class HomeViewController: UIViewController, UICollectionViewDelegate {
     
     override func viewWillAppear(_ animated: Bool) { // TODO: To be deleted
         super.viewWillAppear(animated)
+        // Fetches and re-fetches meals everytime the home view appears
         FoodClient.shared.fetchMeals(for: User()) { (response) in
             DispatchQueue.main.async {
                 switch response {
@@ -63,7 +64,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate {
     }
     
     override func viewDidLoad() {
-        
         super.viewDidLoad()
         view.backgroundColor = .white
         setupFooterView()

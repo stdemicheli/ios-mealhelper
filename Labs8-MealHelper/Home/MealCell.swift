@@ -15,7 +15,7 @@ class MealCell: UICollectionViewCell {
             setupViews()
         }
     }
-    
+    // TODO: To be deleted
     private lazy var nameLabel: UILabel = {
         let label = UILabel()
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -36,6 +36,7 @@ class MealCell: UICollectionViewCell {
     }
     
     private func setupViews() {
+        // TODO: To be deleted
         addSubview(nameLabel)
         
         nameLabel.fillSuperview()

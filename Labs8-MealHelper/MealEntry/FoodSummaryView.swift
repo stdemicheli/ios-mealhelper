@@ -29,7 +29,6 @@ class FoodSummaryView: UIView {
     var servingQtys = (1...20).map { String($0) }
     var servingTypes = ["cup", "100 g", "container", "ounce"]
     
-    
     // MARK: - Private properties
     
     private let servingSizeInputField: PickerInputField = {

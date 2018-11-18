@@ -30,102 +30,49 @@ class FoodClient {
     // MARK: - Meal Helper
     
     func fetchMeals(for user: User, completion: @escaping (Response<[Meal]>) -> ()) {
-        var url = baseUrl
-        url.appendPathComponent("users")
-        url.appendPathComponent(userId) // TODO: Fetch user id from local store
-        url.appendPathComponent("meals")
+        let url = self.url(with: baseUrl, pathComponents: ["users", userId, "meals"])
         
-        URLSession.shared.dataTask(with: url) { (data, res, error) in
-            
+        fetch(from: url) { (meals: [Meal]?, error: Error?) in
             if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
                 completion(Response.error(error))
                 return
             }
             
-            guard let data = data else {
-                NSLog("No data returned")
-                completion(Response.error(NSError()))
-                return
-            }
-            
-            do {
-                let meals = try JSONDecoder().decode([Meal].self, from: data)
-                completion(Response.success(meals))
-            } catch {
-                NSLog("Error decoding data: \(error)")
-                completion(Response.error(error))
-                return
-            }
-        }.resume()
+            completion(Response.success(meals!))
+        }
+        
     }
     
     func fetchRecipes(for user: User, completion: @escaping (Response<[Recipe]>) -> ()) {
-        var url = baseUrl
-        url.appendPathComponent("recipe")
-        url.appendPathComponent(userId) // TODO: Fetch user id from local store
+        let url = self.url(with: baseUrl, pathComponents: ["recipe", userId])
         
-        URLSession.shared.dataTask(with: url) { (data, res, error) in
-            
+        fetch(from: url) { (recipes: [Recipe]?, error: Error?) in
             if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
                 completion(Response.error(error))
                 return
             }
             
-            guard let data = data else {
-                NSLog("No data returned")
-                completion(Response.error(NSError()))
-                return
-            }
-            
-            do {
-                let recipes = try JSONDecoder().decode([Recipe].self, from: data)
-                completion(Response.success(recipes))
-            } catch {
-                NSLog("Error decoding data: \(error)")
-                completion(Response.error(error))
-                return
-            }
-        }.resume()
+            completion(Response.success(recipes!))
+        }
+        
     }
     
     func fetchIngredients(for user: User, completion: @escaping (Response<[Ingredient]>) -> ()) {
-        var url = baseUrl
-        url.appendPathComponent("ingredients")
-        url.appendPathComponent(userId) // TODO: Fetch user id from local store
+        let url = self.url(with: baseUrl, pathComponents: ["ingredients", userId])
         
-        URLSession.shared.dataTask(with: url) { (data, res, error) in
-            
+        fetch(from: url) { (ingredients: [Ingredient]?, error: Error?) in
             if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
                 completion(Response.error(error))
                 return
             }
             
-            guard let data = data else {
-                NSLog("No data returned")
-                completion(Response.error(NSError()))
-                return
-            }
-            
-            do {
-                let ingredient = try JSONDecoder().decode([Ingredient].self, from: data)
-                completion(Response.success(ingredient))
-            } catch {
-                NSLog("Error decoding data: \(error)")
-                completion(Response.error(error))
-                return
-            }
-        }.resume()
+            completion(Response.success(ingredients!))
+        }
+        
     }
     
     func postMeal(with userCredentials: User, mealTime: String, experience: String?, date: String, completion: @escaping (Response<Int>) -> ()) {
-        
-        var url = baseUrl
-        url.appendPathComponent("users")
-        url.appendPathComponent(userId)
-        url.appendPathComponent("meals")
+        let url = self.url(with: baseUrl, pathComponents: ["users", userId, "meals"])
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
@@ -177,10 +124,7 @@ class FoodClient {
     
     
     func postIngredient(with userCredentials: User, name: String, nutrientId: String?, completion: @escaping (Response<Int>) -> ()) {
-        
-        var url = baseUrl
-        url.appendPathComponent("ingredients")
-        url.appendPathComponent(userId)
+        let url = self.url(with: baseUrl, pathComponents: ["ingredients", userId])
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
@@ -274,6 +218,39 @@ class FoodClient {
     }
     
     // MARK: - Private
+    
+    private func fetch<Resource: Codable>(from url: URL, using session: URLSession = URLSession.shared, completion: @escaping (Resource?, Error?) -> Void) {
+        session.dataTask(with: url) { (data, res, error) in
+            
+            if let error = error {
+                NSLog("Error with fetching foods: \(error)")
+                completion(nil, error)
+                return
+            }
+            
+            guard let data = data else {
+                NSLog("No data returned")
+                completion(nil, NSError(domain: "com.stefano.Labs8-MealHelper.ErrorDomain", code: -1, userInfo: nil))
+                return
+            }
+            
+            do {
+                let foods = try JSONDecoder().decode(Resource.self, from: data)
+                completion(foods, nil)
+            } catch {
+                NSLog("Error decoding data: \(error)")
+                completion(nil, error)
+                return
+            }
+            
+        }.resume()
+    }
+    
+    private func url(with baseUrl: URL, pathComponents: [String]) -> URL {
+        var url = baseUrl
+        pathComponents.forEach { url.appendPathComponent($0) }
+        return url
+    }
     
     private func convertToIngredient(_ usdaIngredients: [UsdaIngredients.Item.UsdaIngredient]) -> [Ingredient] {
         return usdaIngredients.map { Ingredient(name: $0.name, nbdId: $0.ndbId) }

@@ -92,6 +92,8 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseId, for: indexPath) as! FoodTableViewCell<Ingredient>
         
+        cell.delegate = self
+        
         switch indexPath.section {
         case 0:
             guard let ingredient = foods?[indexPath.row] else { return cell }

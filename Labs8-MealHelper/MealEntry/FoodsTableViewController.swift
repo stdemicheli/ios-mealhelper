@@ -9,7 +9,7 @@
 import UIKit
 import CoreData
 
-class FoodsTableViewController<Resource, Cell: UITableViewCell>: UITableViewController, NSFetchedResultsControllerDelegate {
+class FoodsTableViewController<Resource, Cell: UITableViewCell>: UITableViewController, FoodTableViewCellDelegate {
     
     // MARK: - Public properties
     
@@ -68,8 +68,9 @@ class FoodsTableViewController<Resource, Cell: UITableViewCell>: UITableViewCont
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseId, for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellReuseId, for: indexPath) as! FoodTableViewCell<Resource>
         
+        cell.delegate = self
         //cell.recipe = recipes[indexPath.row]
         
         return cell
@@ -101,7 +102,7 @@ class FoodsTableViewController<Resource, Cell: UITableViewCell>: UITableViewCont
     
     func selectFood(at indexPath: IndexPath) {
         if let cell = tableView.cellForRow(at: indexPath) as? FoodTableViewCell<Resource> {
-            cell.selectRow(cell.selectButton)
+            cell.updateLayouts()
         }
         
         if selectedFoodAtIndex.contains(indexPath.row) {
@@ -110,6 +111,11 @@ class FoodsTableViewController<Resource, Cell: UITableViewCell>: UITableViewCont
         } else {
             selectedFoodAtIndex.append(indexPath.row)
         }
+    }
+    
+    func selectFood(from cell: UITableViewCell) {
+        guard let indexPath = tableView.indexPath(for: cell) else { return }
+        selectFood(at: indexPath)
     }
     
     func getSelectedFoods() -> [Resource] {

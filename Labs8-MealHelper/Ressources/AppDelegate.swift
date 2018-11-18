@@ -19,12 +19,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         window?.makeKeyAndVisible()
 
         //For full flow, use this
-        let loginController = LoginViewController()
-        window?.rootViewController = loginController
+//        let loginController = LoginViewController()
+//        window?.rootViewController = loginController
         
         //To start on HomeScreen, use this
-//        let homeViewController = HomeViewController()
-//        window?.rootViewController = homeViewController
+        let homeViewController = HomeViewController()
+        window?.rootViewController = homeViewController
         
         //To start at meals table view use this
 //        let mealsVC = MealsTableViewController(navTitle: "Meals")

@@ -39,6 +39,7 @@ class MealsTableViewController: FoodsTableViewController<Recipe, FoodTableViewCe
         
         guard let recipe = foods?[indexPath.row] else { return cell }
         cell.food = recipe
+        cell.delegate = self
         
         return cell
     }

@@ -24,7 +24,7 @@ class FoodClient {
     let usdaBaseUrl: URL = URL(string: "https://api.nal.usda.gov/ndb/search/")!
     let usdaAPIKey = "c24xU3JZJhbrgnquXUNlyAGXcysBibSmESbE3Nl6"
     let baseUrl: URL = URL(string: "https://labs8-meal-helper.herokuapp.com/")!
-    var userId = Constants.User().id
+    var userId = Constants.User().id // TODO: to be deleted.
     //var userId = String(UserDefaults().loggedInUserId())
     
     // MARK: - Meal Helper
@@ -32,42 +32,21 @@ class FoodClient {
     func fetchMeals(for user: User, completion: @escaping (Response<[Meal]>) -> ()) {
         let url = self.url(with: baseUrl, pathComponents: ["users", userId, "meals"])
         
-        fetch(from: url) { (meals: [Meal]?, error: Error?) in
-            if let error = error {
-                completion(Response.error(error))
-                return
-            }
-            
-            completion(Response.success(meals!))
-        }
+        fetch(from: url, completion: completion)
         
     }
     
     func fetchRecipes(for user: User, completion: @escaping (Response<[Recipe]>) -> ()) {
         let url = self.url(with: baseUrl, pathComponents: ["recipe", userId])
         
-        fetch(from: url) { (recipes: [Recipe]?, error: Error?) in
-            if let error = error {
-                completion(Response.error(error))
-                return
-            }
-            
-            completion(Response.success(recipes!))
-        }
+        fetch(from: url, completion: completion)
         
     }
     
     func fetchIngredients(for user: User, completion: @escaping (Response<[Ingredient]>) -> ()) {
         let url = self.url(with: baseUrl, pathComponents: ["ingredients", userId])
         
-        fetch(from: url) { (ingredients: [Ingredient]?, error: Error?) in
-            if let error = error {
-                completion(Response.error(error))
-                return
-            }
-            
-            completion(Response.success(ingredients!))
-        }
+        fetch(from: url, completion: completion)
         
     }
     
@@ -80,16 +59,7 @@ class FoodClient {
             "date": date
         ]
         
-        post(with: url, requestBody: reqBody) { (response: Int?, error: Error?) in
-            if let error = error {
-                completion(Response.error(error))
-                return
-            }
-            
-            if let response = response {
-                completion(Response.success(response))
-            }
-        }
+        post(with: url, requestBody: reqBody, completion: completion)
         
     }
     
@@ -98,16 +68,7 @@ class FoodClient {
         let url = self.url(with: baseUrl, pathComponents: ["ingredients", userId])
         let reqBody = ["name": name, "nutrients_id": nutrientId]
         
-        post(with: url, requestBody: reqBody) { (response: Int?, error: Error?) in
-            if let error = error {
-                completion(Response.error(error))
-                return
-            }
-            
-            if let response = response {
-                completion(Response.success(response))
-            }
-        }
+        post(with: url, requestBody: reqBody, completion: completion)
         
     }
     
@@ -161,34 +122,34 @@ class FoodClient {
     
     // MARK: - Private
     
-    private func fetch<Resource: Codable>(from url: URL, using session: URLSession = URLSession.shared, completion: @escaping (Resource?, Error?) -> Void) {
+    private func fetch<Resource: Codable>(from url: URL, using session: URLSession = URLSession.shared, completion: @escaping ((Response<Resource>) -> ())) {
         session.dataTask(with: url) { (data, res, error) in
             
             if let error = error {
                 NSLog("Error with fetching foods: \(error)")
-                completion(nil, error)
+                completion(Response.error(error))
                 return
             }
             
             guard let data = data else {
                 NSLog("No data returned")
-                completion(nil, NSError(domain: "com.stefano.Labs8-MealHelper.ErrorDomain", code: -1, userInfo: nil))
+                completion(Response.error(NSError(domain: "com.stefano.Labs8-MealHelper.ErrorDomain", code: -1, userInfo: nil)))
                 return
             }
             
             do {
                 let foods = try JSONDecoder().decode(Resource.self, from: data)
-                completion(foods, nil)
+                completion(Response.success(foods))
             } catch {
                 NSLog("Error decoding data: \(error)")
-                completion(nil, error)
+                completion(Response.error(error))
                 return
             }
             
         }.resume()
     }
     
-    private func post<Resource: Codable>(with url: URL, requestBody: Dictionary<String, String?>, using session: URLSession = URLSession.shared, completion: @escaping (Resource?, Error?) -> Void) {
+    private func post<Resource: Codable>(with url: URL, requestBody: Dictionary<String, String?>, using session: URLSession = URLSession.shared, completion: @escaping ((Response<Resource>) -> ())) {
         
         var urlRequest = URLRequest(url: url)
         urlRequest.httpMethod = HTTPMethod.post.rawValue
@@ -202,7 +163,7 @@ class FoodClient {
             urlRequest.httpBody = requestBodyJson
         } catch {
             NSLog("Failed to encode foods: \(error)")
-            completion(nil, error)
+            completion(Response.error(error))
             return
         }
         
@@ -210,22 +171,22 @@ class FoodClient {
             
             if let error = error {
                 NSLog("Error with urlReqeust: \(error)")
-                completion(nil, error)
+                completion(Response.error(error))
                 return
             }
             
             guard let data = data else {
                 NSLog("No data returned")
-                completion(nil, error)
+                completion(Response.error(NSError(domain: "com.stefano.Labs8-MealHelper.ErrorDomain", code: -1, userInfo: nil)))
                 return
             }
             
             do {
                 let response = try JSONDecoder().decode(Resource.self, from: data)
-                completion(response, nil)
+                completion(Response.success(response))
             } catch {
                 NSLog("Error decoding data: \(error)")
-                completion(nil, error)
+                completion(Response.error(error))
                 return
             }
         }.resume()

@@ -34,11 +34,11 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
     }()
     
     override lazy var noItemSelectedbarButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(noItemsSelectedAction))
+        return UIBarButtonItem(barButtonSystemItem: .cancel, target: self, action: #selector(actionWhenNoItemsSelected))
     }()
 
     override lazy var itemsSelectedBarButton: UIBarButtonItem = {
-        return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(itemsSelectedAction))
+        return UIBarButtonItem(barButtonSystemItem: .save, target: self, action: #selector(actionWhenItemsSelected))
     }()
     
     // MARK: - Life Cycle
@@ -109,21 +109,23 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        // On row click, show a ingredient detail modal
         let ingredientDetailVC = IngredientDetailViewController()
         ingredientDetailVC.modalPresentationStyle = .overFullScreen
-        // We use a delegation pattern so the dismissing VC can handle selection of a row
-        ingredientDetailVC.delegate = self
-        ingredientDetailVC.delegateIndexPath = indexPath
+        ingredientDetailVC.delegate = self // We use a delegation pattern so the dismissing detailVC can handle selection of an ingredient
+        ingredientDetailVC.delegateIndexPath = indexPath // Select ingredient at indexPath
+        
         let ingredient = foods?[indexPath.row]
         ingredientDetailVC.ingredient = ingredient
+        
         present(ingredientDetailVC, animated: true, completion: nil)
     }
     
-    override func noItemsSelectedAction() {
+    override func actionWhenNoItemsSelected() {
         navigationController?.popViewController(animated: true)
     }
     
-    override func itemsSelectedAction() {
+    override func actionWhenItemsSelected() {
         for index in selectedFoodAtIndex {
             guard let foods = foods, let name = foods[index].name else { continue }
             FoodClient.shared.postIngredient(with: User(), name: name, nutrientId: "", completion: { (response) in
@@ -131,8 +133,8 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
             })
         }
         
-        let recipe = Recipe(name: "test", calories: 123, servings: 1, ingredients: getSelectedFoods(), userId: 1, mealId: 123)
-        FoodClient.shared.recipes.append(recipe)
+        // TODO: // Save ingredients to recipe
+        
         self.navigationController?.popViewController(animated: true)
     }
     

@@ -20,7 +20,7 @@ class IngredientDetailViewController: UIViewController {
     }
     var delegate: IngredientsTableViewController?
     var delegateIndexPath: IndexPath?
-    var foodLabels = ["Gluten-free", "No sugar", "High-fiber"]
+    var foodLabels = ["Gluten-free", "No sugar", "High-fiber"] // TODO: Handle food labels
     
     // MARK: - Private properties
     

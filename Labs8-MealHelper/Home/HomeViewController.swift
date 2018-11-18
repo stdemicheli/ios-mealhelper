@@ -45,24 +45,6 @@ class HomeViewController: UIViewController, UICollectionViewDelegate {
         return ebv
     }()
     
-    override func viewWillAppear(_ animated: Bool) { // TODO: To be deleted
-        super.viewWillAppear(animated)
-        // Fetches and re-fetches meals everytime the home view appears
-        FoodClient.shared.fetchMeals(for: User()) { (response) in
-            DispatchQueue.main.async {
-                switch response {
-                case .success(let meals):
-                    FoodClient.shared.meals = meals.reversed()
-                    self.collectionView.reloadData()
-                case .error(let error):
-                    NSLog("Error fetching ingredients\(error)")
-                    break
-                }
-            }
-        } // TODO: To be deleted
-        collectionView.reloadData()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white

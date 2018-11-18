@@ -251,6 +251,7 @@ class LoginViewController: UIViewController
     
     @objc private func handleAuthentication()
     {
+        // TODO: To be deleted:
         let homeVC = HomeViewController()
         self.present(homeVC, animated: true, completion: nil)
         return

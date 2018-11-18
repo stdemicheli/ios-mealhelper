@@ -103,7 +103,7 @@ class FoodSummaryView: UIView {
         inputStackView.anchor(top: nil, leading: mainStackView.leadingAnchor, bottom: nil, trailing: mainStackView.trailingAnchor)
         
         nameLabel.text = title
-        //servingLabel.text = "1 cup"
+        servingLabel.text = "Some subtitle"
         
         servingSizeInputField.picker.delegate = self
         servingSizeInputField.picker.dataSource = self

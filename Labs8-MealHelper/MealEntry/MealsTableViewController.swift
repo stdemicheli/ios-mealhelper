@@ -44,12 +44,12 @@ class MealsTableViewController: FoodsTableViewController<Recipe, FoodTableViewCe
         return cell
     }
     
-    override func noItemsSelectedAction() {
+    override func actionWhenNoItemsSelected() {
         let ingredientsVC = IngredientsTableViewController(navTitle: "Ingredients")
         navigationController?.pushViewController(ingredientsVC, animated: true)
     }
     
-    override func itemsSelectedAction() {
+    override func actionWhenItemsSelected() {
         let mealSetupVC = MealSetupTableViewController()
         mealSetupVC.recipes = getSelectedFoods()
         navigationController?.pushViewController(mealSetupVC, animated: true)

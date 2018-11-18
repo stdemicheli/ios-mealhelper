@@ -32,15 +32,11 @@ class HomeCollectionView: UICollectionView, UICollectionViewDataSource, UICollec
     }
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return FoodClient.shared.meals.count // TODO: To be deleted
+        return 50
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MealCell
-        
-        guard FoodClient.shared.meals.indices.contains(indexPath.row) else { return cell }
-        
-        cell.meal = FoodClient.shared.meals[indexPath.row]
         
         return cell
     }

@@ -21,6 +21,7 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
     }
     
     // MARK: - Private properties
+    
     private lazy var searchController: UISearchController = {
         var sc = UISearchController(searchResultsController: nil)
         sc.searchResultsUpdater = self
@@ -47,6 +48,7 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
         super.viewDidLoad()
         tableView.tableHeaderView = searchController.searchBar
         
+        // Fetch previously saved ingredients
         FoodClient.shared.fetchIngredients(for: User()) { (response) in
             DispatchQueue.main.async {
                 switch response {
@@ -155,7 +157,7 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
         case .notDetermined:
             AVCaptureDevice.requestAccess(for: .video) { (granted) in
                 // Show alert message instead:
-                //if !granted { fatalError("MealHelper needs camera access") }
+                // if !granted { fatalError("MealHelper needs camera access") } --> Handle differently
                 
                 self.present(cameraVC, animated: true, completion: nil)
             }
@@ -165,7 +167,7 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
             fallthrough
         case .restricted:
             // Show alert message instead:
-            //fatalError("MealHelper needs camera access")
+            //fatalError("MealHelper needs camera access") --> Handle differently
             break
         }
     }

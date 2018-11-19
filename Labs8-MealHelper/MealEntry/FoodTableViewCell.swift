@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol FoodTableViewCellDelegate {
+protocol FoodTableViewCellDelegate: class {
     func selectFood(from cell: UITableViewCell)
 }
 
@@ -21,7 +21,7 @@ class FoodTableViewCell<Resource>: UITableViewCell {
             setupViews()
         }
     }
-    var delegate: FoodTableViewCellDelegate?
+    weak var delegate: FoodTableViewCellDelegate?
     
     // MARK: - Private properties
     

@@ -22,6 +22,8 @@
 		3DB65F272196200D007AA68A /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F242196200D007AA68A /* HTTPMethod.swift */; };
 		3DB65F282196200D007AA68A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F252196200D007AA68A /* APIClient.swift */; };
 		3DB65F292196200D007AA68A /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F262196200D007AA68A /* Response.swift */; };
+		3DFEEDAE21A2E85100465FCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */; };
+		3DFEEDB021A2FBA300465FCB /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */; };
 		3E366CC5BED1B159C22D871B /* Pods_Labs8_MealHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */; };
 		AC1DE867219473DD0066172C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DE866219473DD0066172C /* HomeViewController.swift */; };
 		AC1DE8692194748F0066172C /* MealCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DE8682194748F0066172C /* MealCell.swift */; };
@@ -105,6 +107,8 @@
 		3DB65F242196200D007AA68A /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPMethod.swift; path = "Labs8-MealHelper/Networking/HTTPMethod.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F252196200D007AA68A /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIClient.swift; path = "Labs8-MealHelper/Networking/APIClient.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F262196200D007AA68A /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Response.swift; path = "Labs8-MealHelper/Networking/Response.swift"; sourceTree = SOURCE_ROOT; };
+		3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
 		41CE98120756C3041BA30512 /* Pods-Labs8-MealHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Labs8-MealHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper.debug.xcconfig"; sourceTree = "<group>"; };
 		5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Labs8_MealHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		7A8876A4E2C1D0A7FAE307FB /* Pods-Labs8-MealHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Labs8-MealHelper.release.xcconfig"; path = "Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper.release.xcconfig"; sourceTree = "<group>"; };
@@ -297,6 +301,7 @@
 				3D56A9D821934FAC00A91EF4 /* Assets.xcassets */,
 				3D56A9DA21934FAC00A91EF4 /* LaunchScreen.storyboard */,
 				3D56A9DD21934FAC00A91EF4 /* Info.plist */,
+				3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */,
 				3D56A9D121934FAA00A91EF4 /* AppDelegate.swift */,
 			);
 			path = Ressources;
@@ -342,6 +347,7 @@
 				AC85F3D4219E3525007765CA /* CameraPreview.swift */,
 				AC85F3CF219E3524007765CA /* FoodClient.swift */,
 				AC8F0B58219E3AE300E623FB /* MealEntry.xcassets */,
+				3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */,
 			);
 			path = MealEntry;
 			sourceTree = "<group>";
@@ -426,6 +432,7 @@
 			files = (
 				3D56A9DC21934FAC00A91EF4 /* LaunchScreen.storyboard in Resources */,
 				3D56A9D921934FAC00A91EF4 /* Assets.xcassets in Resources */,
+				3DFEEDAE21A2E85100465FCB /* GoogleService-Info.plist in Resources */,
 				3D90DE712194D46D006C116B /* Login.xcassets in Resources */,
 				AC85F391219E0E91007765CA /* Montserrat-SemiBold.ttf in Resources */,
 				AC8F0B59219E3AE300E623FB /* MealEntry.xcassets in Resources */,
@@ -505,6 +512,7 @@
 				AC85F3E1219E3526007765CA /* IngredientDetailViewController.swift in Sources */,
 				3DB65F292196200D007AA68A /* Response.swift in Sources */,
 				AC85F38A219E0B2F007765CA /* LoadingButton.swift in Sources */,
+				3DFEEDB021A2FBA300465FCB /* BarcodeScanner.swift in Sources */,
 				3D131CD521A198B3009681D0 /* UserDefault+Helper.swift in Sources */,
 				AC85F3C8219E350C007765CA /* Food.swift in Sources */,
 				AC85F3DF219E3526007765CA /* CameraViewController.swift in Sources */,

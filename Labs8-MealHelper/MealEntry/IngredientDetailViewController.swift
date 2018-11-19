@@ -18,9 +18,9 @@ class IngredientDetailViewController: UIViewController {
             setupViews()
         }
     }
-    var delegate: IngredientsTableViewController?
-    var delegateIndexPath: IndexPath?
-    var foodLabels = ["Gluten-free", "No sugar", "High-fiber"] // TODO: Handle food labels
+    weak var delegate: IngredientsTableViewController?
+    var delegateIndexPath: IndexPath? // TODO: add protocol
+    var foodLabels = ["Gluten-free", "No sugar", "High-fiber", "Low Fat", "High Protein", "Saturated Fat-Free", "Low-Sodium"] // TODO: Handle food labels
     
     // MARK: - Private properties
     

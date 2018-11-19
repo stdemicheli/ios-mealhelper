@@ -7,5 +7,7 @@ target 'Labs8-MealHelper' do
 
   # Pods for Labs8-MealHelper
   pod 'Firebase/Core'
+  pod 'Firebase/MLVision'
+  pod 'Firebase/MLVisionBarcodeModel'
 
 end

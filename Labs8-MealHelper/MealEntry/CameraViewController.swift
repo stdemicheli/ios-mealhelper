@@ -8,13 +8,14 @@
 
 import UIKit
 import AVFoundation
-import Photos
+import Firebase
 
-class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBufferDelegate {
+class CameraViewController: UIViewController {
     
     // MARK: - Properties
     private var captureSession: AVCaptureSession!
     private var previewView = CameraPreview()
+    private lazy var vision = Vision.vision() // Firebase vision API
     
     // MARK: - Life Cycle
     
@@ -37,63 +38,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     
     // MARK: - User actions
     
-    // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
-    
-    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        // Send video frames with Firebase MLVisionBarcodeModel
-        
-        let image = imageFromSampleBuffer(sampleBuffer)
-        
-//        let imageBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
-//
-//        let ciImage : CIImage = CIImage(cvPixelBuffer: imageBuffer)
-//
-//        let image : UIImage = self.image(from: ciImage)
-        
-        print(image)
-    }
-    
-//    private func image(from ciImage: CIImage) -> UIImage {
-//        let context: CIContext = CIContext.init(options: nil)
-//        let cgImage: CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
-//        let image: UIImage = UIImage.init(cgImage: cgImage)
-//        return image
-//    }
-    
-    func imageFromSampleBuffer(_ sampleBuffer : CMSampleBuffer) -> UIImage {
-        // Get a CMSampleBuffer's Core Video image buffer for the media data
-        let  imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
-        // Lock the base address of the pixel buffer
-        CVPixelBufferLockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly);
-        
-        
-        // Get the number of bytes per row for the pixel buffer
-        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer!);
-        
-        // Get the number of bytes per row for the pixel buffer
-        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer!);
-        // Get the pixel buffer width and height
-        let width = CVPixelBufferGetWidth(imageBuffer!);
-        let height = CVPixelBufferGetHeight(imageBuffer!);
-        
-        // Create a device-dependent RGB color space
-        let colorSpace = CGColorSpaceCreateDeviceRGB();
-        
-        // Create a bitmap graphics context with the sample buffer data
-        var bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Little.rawValue
-        bitmapInfo |= CGImageAlphaInfo.premultipliedFirst.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
-        //let bitmapInfo: UInt32 = CGBitmapInfo.alphaInfoMask.rawValue
-        let context = CGContext.init(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo)
-        // Create a Quartz image from the pixel data in the bitmap graphics context
-        let quartzImage = context?.makeImage();
-        // Unlock the pixel buffer
-        CVPixelBufferUnlockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly);
-        
-        // Create an image object from the Quartz image
-        let image = UIImage.init(cgImage: quartzImage!);
-        
-        return (image);
-    }
     
     // MARK: - Configuration
     
@@ -103,12 +47,16 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     }
     
     private func setupCapture() {
+        // Setup: AVCaptureDeviceInput --> AVCaptureSession --> AVCaptureOutput (i.e. AVCaptureVideoPreviewLayer & AVCaptureVideoDataOutput)
+        
+        // Session
+        let captureSession = AVCaptureSession()
+        
+        // VideoPreviewLayer
         view.addSubview(previewView)
         previewView.fillSuperview()
         
-        // AVCaptureDeviceInput --> AVCaptureSession --> AVCaptureOutput (i.e. AVCaptureVideoPreviewLayer & AVCaptureVideoDataOutput)
-        let captureSession = AVCaptureSession()
-        
+        // Input
         let device = bestCamera()
         guard let videoDeviceInput = try? AVCaptureDeviceInput(device: device),
             captureSession.canAddInput(videoDeviceInput) else { // check if it can be added or not
@@ -118,10 +66,10 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         }
         captureSession.addInput(videoDeviceInput)
         
-        // AVCaptureVideoDataOutput
+        // VideoDataOutput
         let videoDataOutput = AVCaptureVideoDataOutput()
         // TODO: Set Videosettings (compression settings)
-        // Queue that will handle video frames
+        // DispatchQueue that will handle video frames
         let dataOutputQueue = DispatchQueue(label: "video-data-queue",
                                             qos: .userInitiated,
                                             attributes: [],
@@ -138,7 +86,6 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
         
         self.captureSession = captureSession
         
-        // Assign captureSession to the VideoPreviewLayer
         previewView.videoPreviewLayer.session = captureSession
     }
     
@@ -150,6 +97,106 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
             return device
         } else {
             fatalError("Missing expected back camera device")
+        }
+    }
+    
+}
+
+// MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
+
+extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
+    
+    func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // Detect video frames with Firebase MLVisionBarcodeModel
+        detectBarcodes(with: sampleBuffer)
+    }
+    
+    // Keep in case we need to work with images (e.g. compression)
+    private func imageFromSampleBuffer(_ sampleBuffer : CMSampleBuffer) -> UIImage {
+        // Get a CMSampleBuffer's Core Video image buffer for the media data
+        let  imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)
+        
+        // Lock the base address of the pixel buffer
+        CVPixelBufferLockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly);
+        
+        // Get the number of bytes per row, width and height for the pixel buffer
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer!)
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer!)
+        let width = CVPixelBufferGetWidth(imageBuffer!)
+        let height = CVPixelBufferGetHeight(imageBuffer!)
+        
+        // Create a device-dependent RGB color space
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        
+        // Create a bitmap graphics context with the sample buffer data
+        var bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Little.rawValue
+        bitmapInfo |= CGImageAlphaInfo.premultipliedFirst.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
+        //let bitmapInfo: UInt32 = CGBitmapInfo.alphaInfoMask.rawValue
+        let context = CGContext.init(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo)
+        // Create a Quartz image from the pixel data in the bitmap graphics context
+        let quartzImage = context?.makeImage()
+        // Unlock the pixel buffer
+        CVPixelBufferUnlockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly)
+        
+        // Create an image object from the Quartz image
+        let image = UIImage.init(cgImage: quartzImage!)
+        
+        return (image)
+    }
+    
+}
+
+extension CameraViewController {
+    
+    func detectBarcodes(with buffer: CMSampleBuffer) {
+        // Define options for barcode detector
+        let format = VisionBarcodeFormat.all // TODO: restrict format for better performance
+        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
+        
+        // Create barcode detector
+        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
+        
+        let visionImage = VisionImage(buffer: buffer)
+        
+        barcodeDetector.detect(in: visionImage) { (features, error) in
+            if let error = error {
+                NSLog("On-device barcode detection failed with error \(String(describing: error))")
+                return
+            }
+            
+            guard let features = features, !features.isEmpty else {
+                NSLog("No barcode detected")
+                return
+            }
+            
+            let barcodeString = features.first?.rawValue
+            
+        }
+    }
+    
+    func detectBarcodes(with image: UIImage) {
+        // Define options for barcode detector
+        let format = VisionBarcodeFormat.all
+        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
+        
+        vision.cloudddete
+        // Create barcode detector
+        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
+        
+        let visionImage = VisionImage(image: image)
+        
+        barcodeDetector.detect(in: visionImage) { (features, error) in
+            if let error = error {
+                NSLog("On-device barcode detection failed with error \(String(describing: error))")
+                return
+            }
+            
+            guard let features = features, !features.isEmpty else {
+                NSLog("No barcode detected")
+                return
+            }
+            
+            let barcodeString = features.first?.rawValue
         }
     }
     

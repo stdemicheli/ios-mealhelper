@@ -40,7 +40,59 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
     // MARK: - AVCaptureVideoDataOutputSampleBufferDelegate
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
+        // Send video frames with Firebase MLVisionBarcodeModel
         
+        let image = imageFromSampleBuffer(sampleBuffer)
+        
+//        let imageBuffer: CVPixelBuffer = CMSampleBufferGetImageBuffer(sampleBuffer)!
+//
+//        let ciImage : CIImage = CIImage(cvPixelBuffer: imageBuffer)
+//
+//        let image : UIImage = self.image(from: ciImage)
+        
+        print(image)
+    }
+    
+//    private func image(from ciImage: CIImage) -> UIImage {
+//        let context: CIContext = CIContext.init(options: nil)
+//        let cgImage: CGImage = context.createCGImage(ciImage, from: ciImage.extent)!
+//        let image: UIImage = UIImage.init(cgImage: cgImage)
+//        return image
+//    }
+    
+    func imageFromSampleBuffer(_ sampleBuffer : CMSampleBuffer) -> UIImage {
+        // Get a CMSampleBuffer's Core Video image buffer for the media data
+        let  imageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer);
+        // Lock the base address of the pixel buffer
+        CVPixelBufferLockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly);
+        
+        
+        // Get the number of bytes per row for the pixel buffer
+        let baseAddress = CVPixelBufferGetBaseAddress(imageBuffer!);
+        
+        // Get the number of bytes per row for the pixel buffer
+        let bytesPerRow = CVPixelBufferGetBytesPerRow(imageBuffer!);
+        // Get the pixel buffer width and height
+        let width = CVPixelBufferGetWidth(imageBuffer!);
+        let height = CVPixelBufferGetHeight(imageBuffer!);
+        
+        // Create a device-dependent RGB color space
+        let colorSpace = CGColorSpaceCreateDeviceRGB();
+        
+        // Create a bitmap graphics context with the sample buffer data
+        var bitmapInfo: UInt32 = CGBitmapInfo.byteOrder32Little.rawValue
+        bitmapInfo |= CGImageAlphaInfo.premultipliedFirst.rawValue & CGBitmapInfo.alphaInfoMask.rawValue
+        //let bitmapInfo: UInt32 = CGBitmapInfo.alphaInfoMask.rawValue
+        let context = CGContext.init(data: baseAddress, width: width, height: height, bitsPerComponent: 8, bytesPerRow: bytesPerRow, space: colorSpace, bitmapInfo: bitmapInfo)
+        // Create a Quartz image from the pixel data in the bitmap graphics context
+        let quartzImage = context?.makeImage();
+        // Unlock the pixel buffer
+        CVPixelBufferUnlockBaseAddress(imageBuffer!, CVPixelBufferLockFlags.readOnly);
+        
+        // Create an image object from the Quartz image
+        let image = UIImage.init(cgImage: quartzImage!);
+        
+        return (image);
     }
     
     // MARK: - Configuration
@@ -75,7 +127,7 @@ class CameraViewController: UIViewController, AVCaptureVideoDataOutputSampleBuff
                                             attributes: [],
                                             autoreleaseFrequency: .workItem)
         videoDataOutput.setSampleBufferDelegate(self, queue: dataOutputQueue)
-        videoDataOutput.videoSettings = [:]
+        videoDataOutput.videoSettings = [(kCVPixelBufferPixelFormatTypeKey as String) : NSNumber(value: kCVPixelFormatType_32BGRA as UInt32)]
         
         if captureSession.canAddOutput(videoDataOutput) {
             captureSession.addOutput(videoDataOutput)

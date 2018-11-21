@@ -16,6 +16,10 @@ class CameraViewController: UIViewController {
     private var captureSession: AVCaptureSession!
     private var previewView = CameraPreview()
     private lazy var vision = Vision.vision() // Firebase vision API
+    private var barcodeScanner = BarcodeScanner()
+    private var scanLayer = CAShapeLayer()
+    private var blurView = UIVisualEffectView (effect: UIBlurEffect (style: UIBlurEffect.Style.extraLight))
+    
     
     // MARK: - Life Cycle
     
@@ -49,12 +53,49 @@ class CameraViewController: UIViewController {
     private func setupCapture() {
         // Setup: AVCaptureDeviceInput --> AVCaptureSession --> AVCaptureOutput (i.e. AVCaptureVideoPreviewLayer & AVCaptureVideoDataOutput)
         
+        
+        // VideoPreviewLayer - Sets up a blur view with a see-through rectangle in the middle in which the barcode should be scanned
+        view.addSubview(previewView)
+        previewView.frame = view.frame
+        
+        //let blurView = UIVisualEffectView (effect: UIBlurEffect (style: UIBlurEffect.Style.extraLight))
+        blurView.frame = previewView.frame
+        blurView.isUserInteractionEnabled = false
+        self.previewView.addSubview(blurView)
+        
+        let path = UIBezierPath (
+            roundedRect: blurView.frame,
+            cornerRadius: 0)
+        
+        let scanPathWidth: CGFloat = 250
+        let scanPath = UIBezierPath(roundedRect: CGRect(x: (view.bounds.width - scanPathWidth) / 2, y: 60.0, width: scanPathWidth, height: 200.0), cornerRadius: 10)
+        
+        path.append(scanPath)
+        path.usesEvenOddFillRule = true
+        
+        let maskLayer = CAShapeLayer()
+        maskLayer.path = path.cgPath
+        maskLayer.fillRule = CAShapeLayerFillRule.evenOdd
+        
+        // var scanLayer = CAShapeLayer()
+        scanLayer.path = scanPath.cgPath
+        scanLayer.strokeColor = UIColor.white.cgColor
+        scanLayer.fillColor = UIColor.clear.cgColor
+        scanLayer.lineWidth = 10
+        
+        blurView.layer.addSublayer(scanLayer)
+        
+        if #available(iOS 11.0, *) {
+            blurView.layer.mask = maskLayer
+        } else {
+            let maskView = UIView(frame: self.view.frame)
+            maskView.backgroundColor = UIColor.black
+            maskView.layer.mask = scanLayer
+            blurView.mask = maskView
+        }
+        
         // Session
         let captureSession = AVCaptureSession()
-        
-        // VideoPreviewLayer
-        view.addSubview(previewView)
-        previewView.fillSuperview()
         
         // Input
         let device = bestCamera()
@@ -81,10 +122,13 @@ class CameraViewController: UIViewController {
             captureSession.addOutput(videoDataOutput)
         }
         
-        captureSession.sessionPreset = .hd1920x1080
+        captureSession.sessionPreset = .high
         captureSession.commitConfiguration() // Save all configurations and set up captureSession
         
         self.captureSession = captureSession
+        
+        //subPreviewView.videoPreviewLayer.session = captureSession
+        previewView.videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill // Fills entire screen
         
         previewView.videoPreviewLayer.session = captureSession
     }
@@ -108,7 +152,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // Detect video frames with Firebase MLVisionBarcodeModel
-        detectBarcodes(with: sampleBuffer)
+        barcodeScanner.detectBarcodes(with: sampleBuffer)
     }
     
     // Keep in case we need to work with images (e.g. compression)
@@ -148,56 +192,63 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 
 extension CameraViewController {
     
+    // For testing purposes:
+    
     func detectBarcodes(with buffer: CMSampleBuffer) {
         // Define options for barcode detector
         let format = VisionBarcodeFormat.all // TODO: restrict format for better performance
         let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
-        
+
         // Create barcode detector
         let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
-        
+
         let visionImage = VisionImage(buffer: buffer)
-        
+
         barcodeDetector.detect(in: visionImage) { (features, error) in
             if let error = error {
                 NSLog("On-device barcode detection failed with error \(String(describing: error))")
                 return
             }
-            
+
             guard let features = features, !features.isEmpty else {
                 NSLog("No barcode detected")
                 return
             }
-            
+
+            if let scanLayer = self.blurView.layer.sublayers?[2] {
+                scanLayer.borderColor = UIColor.red.cgColor
+                scanLayer.setNeedsLayout()
+                self.blurView.setNeedsLayout()
+            }
+
             let barcodeString = features.first?.rawValue
-            
+            print(barcodeString)
         }
     }
-    
-    func detectBarcodes(with image: UIImage) {
-        // Define options for barcode detector
-        let format = VisionBarcodeFormat.all
-        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
-        
-        vision.cloudddete
-        // Create barcode detector
-        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
-        
-        let visionImage = VisionImage(image: image)
-        
-        barcodeDetector.detect(in: visionImage) { (features, error) in
-            if let error = error {
-                NSLog("On-device barcode detection failed with error \(String(describing: error))")
-                return
-            }
-            
-            guard let features = features, !features.isEmpty else {
-                NSLog("No barcode detected")
-                return
-            }
-            
-            let barcodeString = features.first?.rawValue
-        }
-    }
+//
+//    func detectBarcodes(with image: UIImage) {
+//        // Define options for barcode detector
+//        let format = VisionBarcodeFormat.all
+//        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
+//
+//        // Create barcode detector
+//        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
+//
+//        let visionImage = VisionImage(image: image)
+//
+//        barcodeDetector.detect(in: visionImage) { (features, error) in
+//            if let error = error {
+//                NSLog("On-device barcode detection failed with error \(String(describing: error))")
+//                return
+//            }
+//
+//            guard let features = features, !features.isEmpty else {
+//                NSLog("No barcode detected")
+//                return
+//            }
+//
+//            let barcodeString = features.first?.rawValue
+//        }
+//    }
     
 }

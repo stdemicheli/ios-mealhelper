@@ -62,6 +62,7 @@ class MealSetupTableViewController: UITableViewController {
         print("saved")
         // let meal = Meal(mealTime: "", experience: "", date: "", userId: 1)
         // API call to /users/:userid/meals
+        // TODO: Pass in user, or probably leave it out and have FoodClient extract user id
         FoodClient.shared.postMeal(with: User(), mealTime: "Lunch", experience: "happy", date: "11/16/2018") { (response) in
             self.dismiss(animated: true, completion: nil)
         }

@@ -22,6 +22,9 @@
 		3DB65F272196200D007AA68A /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F242196200D007AA68A /* HTTPMethod.swift */; };
 		3DB65F282196200D007AA68A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F252196200D007AA68A /* APIClient.swift */; };
 		3DB65F292196200D007AA68A /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F262196200D007AA68A /* Response.swift */; };
+		3DFEEDAE21A2E85100465FCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */; };
+		3DFEEDB021A2FBA300465FCB /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */; };
+		3E366CC5BED1B159C22D871B /* Pods_Labs8_MealHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */; };
 		AC1DE867219473DD0066172C /* HomeViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DE866219473DD0066172C /* HomeViewController.swift */; };
 		AC1DE8692194748F0066172C /* MealCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = AC1DE8682194748F0066172C /* MealCell.swift */; };
 		AC4D10732194A7A000317F4C /* ExpandableButton.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC4D10722194A79600317F4C /* ExpandableButton.framework */; };
@@ -104,6 +107,11 @@
 		3DB65F242196200D007AA68A /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPMethod.swift; path = "Labs8-MealHelper/Networking/HTTPMethod.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F252196200D007AA68A /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIClient.swift; path = "Labs8-MealHelper/Networking/APIClient.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F262196200D007AA68A /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Response.swift; path = "Labs8-MealHelper/Networking/Response.swift"; sourceTree = SOURCE_ROOT; };
+		3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
+		41CE98120756C3041BA30512 /* Pods-Labs8-MealHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Labs8-MealHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper.debug.xcconfig"; sourceTree = "<group>"; };
+		5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Labs8_MealHelper.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		7A8876A4E2C1D0A7FAE307FB /* Pods-Labs8-MealHelper.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Labs8-MealHelper.release.xcconfig"; path = "Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper.release.xcconfig"; sourceTree = "<group>"; };
 		AC1DE866219473DD0066172C /* HomeViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeViewController.swift; sourceTree = "<group>"; };
 		AC1DE8682194748F0066172C /* MealCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MealCell.swift; sourceTree = "<group>"; };
 		AC4D106D2194A79600317F4C /* ExpandableButton.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = ExpandableButton.xcodeproj; path = ExpandableButton/ExpandableButton.xcodeproj; sourceTree = "<group>"; };
@@ -142,12 +150,22 @@
 			buildActionMask = 2147483647;
 			files = (
 				AC4D10732194A7A000317F4C /* ExpandableButton.framework in Frameworks */,
+				3E366CC5BED1B159C22D871B /* Pods_Labs8_MealHelper.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		27D50E1669D0B7B253B187CA /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				41CE98120756C3041BA30512 /* Pods-Labs8-MealHelper.debug.xcconfig */,
+				7A8876A4E2C1D0A7FAE307FB /* Pods-Labs8-MealHelper.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
 		3D131CD121A19489009681D0 /* UI */ = {
 			isa = PBXGroup;
 			children = (
@@ -188,6 +206,7 @@
 				AC1DE85121946E8A0066172C /* Frameworks */,
 				3D56A9CF21934FAA00A91EF4 /* Products */,
 				3DB65F202196100B007AA68A /* Recovered References */,
+				27D50E1669D0B7B253B187CA /* Pods */,
 			);
 			sourceTree = "<group>";
 		};
@@ -270,6 +289,7 @@
 			isa = PBXGroup;
 			children = (
 				AC4D106D2194A79600317F4C /* ExpandableButton.xcodeproj */,
+				5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */,
 			);
 			path = Frameworks;
 			sourceTree = "<group>";
@@ -281,6 +301,7 @@
 				3D56A9D821934FAC00A91EF4 /* Assets.xcassets */,
 				3D56A9DA21934FAC00A91EF4 /* LaunchScreen.storyboard */,
 				3D56A9DD21934FAC00A91EF4 /* Info.plist */,
+				3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */,
 				3D56A9D121934FAA00A91EF4 /* AppDelegate.swift */,
 			);
 			path = Ressources;
@@ -324,6 +345,7 @@
 				AC85F3D2219E3524007765CA /* IngredientDetailViewController.swift */,
 				AC85F3D0219E3524007765CA /* CameraViewController.swift */,
 				AC85F3D4219E3525007765CA /* CameraPreview.swift */,
+				3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */,
 				AC85F3CF219E3524007765CA /* FoodClient.swift */,
 				AC8F0B58219E3AE300E623FB /* MealEntry.xcassets */,
 			);
@@ -337,10 +359,12 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 3D56A9E021934FAC00A91EF4 /* Build configuration list for PBXNativeTarget "Labs8-MealHelper" */;
 			buildPhases = (
+				4748891FEBB85A2C9F2260E0 /* [CP] Check Pods Manifest.lock */,
 				3D56A9CA21934FAA00A91EF4 /* Sources */,
 				3D56A9CB21934FAA00A91EF4 /* Frameworks */,
 				3D56A9CC21934FAA00A91EF4 /* Resources */,
 				AC1DE86421946EB80066172C /* Embed Frameworks */,
+				A1C649852118B73C6A51B704 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -408,6 +432,7 @@
 			files = (
 				3D56A9DC21934FAC00A91EF4 /* LaunchScreen.storyboard in Resources */,
 				3D56A9D921934FAC00A91EF4 /* Assets.xcassets in Resources */,
+				3DFEEDAE21A2E85100465FCB /* GoogleService-Info.plist in Resources */,
 				3D90DE712194D46D006C116B /* Login.xcassets in Resources */,
 				AC85F391219E0E91007765CA /* Montserrat-SemiBold.ttf in Resources */,
 				AC8F0B59219E3AE300E623FB /* MealEntry.xcassets in Resources */,
@@ -415,6 +440,63 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		4748891FEBB85A2C9F2260E0 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Labs8-MealHelper-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		A1C649852118B73C6A51B704 /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleAPIClientForREST/GoogleAPIClientForREST.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleToolboxForMac/GoogleToolboxForMac.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/Protobuf/Protobuf.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleAPIClientForREST.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleToolboxForMac.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/Protobuf.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		3D56A9CA21934FAA00A91EF4 /* Sources */ = {
@@ -430,6 +512,7 @@
 				AC85F3E1219E3526007765CA /* IngredientDetailViewController.swift in Sources */,
 				3DB65F292196200D007AA68A /* Response.swift in Sources */,
 				AC85F38A219E0B2F007765CA /* LoadingButton.swift in Sources */,
+				3DFEEDB021A2FBA300465FCB /* BarcodeScanner.swift in Sources */,
 				3D131CD521A198B3009681D0 /* UserDefault+Helper.swift in Sources */,
 				AC85F3C8219E350C007765CA /* Food.swift in Sources */,
 				AC85F3DF219E3526007765CA /* CameraViewController.swift in Sources */,
@@ -603,11 +686,12 @@
 		};
 		3D56A9E121934FAC00A91EF4 /* Debug */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 41CE98120756C3041BA30512 /* Pods-Labs8-MealHelper.debug.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SPRLQ9JET8;
+				DEVELOPMENT_TEAM = 84BULQXU2Q;
 				INFOPLIST_FILE = "$(SRCROOT)/Labs8-MealHelper/Ressources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -622,11 +706,12 @@
 		};
 		3D56A9E221934FAC00A91EF4 /* Release */ = {
 			isa = XCBuildConfiguration;
+			baseConfigurationReference = 7A8876A4E2C1D0A7FAE307FB /* Pods-Labs8-MealHelper.release.xcconfig */;
 			buildSettings = {
 				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = SPRLQ9JET8;
+				DEVELOPMENT_TEAM = 84BULQXU2Q;
 				INFOPLIST_FILE = "$(SRCROOT)/Labs8-MealHelper/Ressources/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",

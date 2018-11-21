@@ -8,7 +8,7 @@
 
 import UIKit
 
-protocol MealSetupTableViewCellDelegate {
+protocol MealSetupTableViewCellDelegate: class {
     func setServingQty(with qty: String, for recipe: Any)
     func setServingType(with type: String, for recipe: Any)
 }
@@ -23,7 +23,7 @@ class MealSetupTableViewCell: UITableViewCell {
         }
     }
     
-    var delegate: MealSetupTableViewCellDelegate?
+    weak var delegate: MealSetupTableViewCellDelegate?
     var servingQtys = (1...20).map { String($0) }
     var servingTypes = ["cup", "100 g", "container", "ounce"]
     

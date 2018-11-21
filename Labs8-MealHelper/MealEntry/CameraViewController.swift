@@ -20,11 +20,11 @@ class CameraViewController: UIViewController {
     private var scanLayer = CAShapeLayer()
     private var blurView = UIVisualEffectView (effect: UIBlurEffect (style: UIBlurEffect.Style.extraLight))
     
-    
     // MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        barcodeScanner.delegate = self
         
         setupCapture()
     }
@@ -67,8 +67,8 @@ class CameraViewController: UIViewController {
             roundedRect: blurView.frame,
             cornerRadius: 0)
         
-        let scanPathWidth: CGFloat = 250
-        let scanPath = UIBezierPath(roundedRect: CGRect(x: (view.bounds.width - scanPathWidth) / 2, y: 60.0, width: scanPathWidth, height: 200.0), cornerRadius: 10)
+        let scanPathWidth: CGFloat = 300.0
+        let scanPath = UIBezierPath(roundedRect: CGRect(x: (view.bounds.width - scanPathWidth) / 2, y: 175.0, width: scanPathWidth, height: 250.0), cornerRadius: 10.0)
         
         path.append(scanPath)
         path.usesEvenOddFillRule = true
@@ -77,15 +77,17 @@ class CameraViewController: UIViewController {
         maskLayer.path = path.cgPath
         maskLayer.fillRule = CAShapeLayerFillRule.evenOdd
         
+        
         // var scanLayer = CAShapeLayer()
         scanLayer.path = scanPath.cgPath
         scanLayer.strokeColor = UIColor.white.cgColor
         scanLayer.fillColor = UIColor.clear.cgColor
-        scanLayer.lineWidth = 10
+        scanLayer.lineWidth = 6.5
         
         blurView.layer.addSublayer(scanLayer)
         
         if #available(iOS 11.0, *) {
+            blurView.alpha = 0.65
             blurView.layer.mask = maskLayer
         } else {
             let maskView = UIView(frame: self.view.frame)
@@ -122,7 +124,7 @@ class CameraViewController: UIViewController {
             captureSession.addOutput(videoDataOutput)
         }
         
-        captureSession.sessionPreset = .high
+        captureSession.sessionPreset = .medium
         captureSession.commitConfiguration() // Save all configurations and set up captureSession
         
         self.captureSession = captureSession
@@ -152,7 +154,9 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // Detect video frames with Firebase MLVisionBarcodeModel
-        barcodeScanner.detectBarcodes(with: sampleBuffer)
+        if barcodeScanner.isScanning {
+            barcodeScanner.detectBarcodes(with: sampleBuffer)
+        }
     }
     
     // Keep in case we need to work with images (e.g. compression)
@@ -190,65 +194,44 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     
 }
 
-extension CameraViewController {
+extension CameraViewController: BarcodeScannerDelegate {
     
-    // For testing purposes:
-    
-    func detectBarcodes(with buffer: CMSampleBuffer) {
-        // Define options for barcode detector
-        let format = VisionBarcodeFormat.all // TODO: restrict format for better performance
-        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
-
-        // Create barcode detector
-        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
-
-        let visionImage = VisionImage(buffer: buffer)
-
-        barcodeDetector.detect(in: visionImage) { (features, error) in
-            if let error = error {
-                NSLog("On-device barcode detection failed with error \(String(describing: error))")
-                return
+    func barcodeScanner(_ controller: BarcodeScanner, didFinishScanningWithCode barcode: String) {
+        animateScanLayerAsProcessing()
+        
+        // Make call to usda api
+        print("Barcode: \(barcode)")
+        FoodClient.shared.fetchUsdaIngredients(with: barcode) { (response) in
+            switch response {
+            case .success(let ingredients):
+                self.scanLayer.strokeColor = UIColor.green.cgColor
+                print(ingredients.first?.name)
+                self.barcodeScanner.startScanning()
+            case .error(let error):
+                self.scanLayer.strokeColor = UIColor.red.cgColor
+                self.barcodeScanner.startScanning()
+                print(error)
             }
-
-            guard let features = features, !features.isEmpty else {
-                NSLog("No barcode detected")
-                return
-            }
-
-            if let scanLayer = self.blurView.layer.sublayers?[2] {
-                scanLayer.borderColor = UIColor.red.cgColor
-                scanLayer.setNeedsLayout()
-                self.blurView.setNeedsLayout()
-            }
-
-            let barcodeString = features.first?.rawValue
-            print(barcodeString)
         }
     }
-//
-//    func detectBarcodes(with image: UIImage) {
-//        // Define options for barcode detector
-//        let format = VisionBarcodeFormat.all
-//        let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
-//
-//        // Create barcode detector
-//        let barcodeDetector = vision.barcodeDetector(options: barcodeOptions)
-//
-//        let visionImage = VisionImage(image: image)
-//
-//        barcodeDetector.detect(in: visionImage) { (features, error) in
-//            if let error = error {
-//                NSLog("On-device barcode detection failed with error \(String(describing: error))")
-//                return
-//            }
-//
-//            guard let features = features, !features.isEmpty else {
-//                NSLog("No barcode detected")
-//                return
-//            }
-//
-//            let barcodeString = features.first?.rawValue
-//        }
-//    }
+    
+    func barcodeScanner(_ controller: BarcodeScanner, didReceiveError error: Error) {
+        // Handle error
+    }
+    
+}
+
+extension CameraViewController {
+    
+    private func animateScanLayerAsProcessing() {
+        let animation = CABasicAnimation(keyPath: "strokeColor")
+        animation.fromValue = UIColor.white.cgColor
+        animation.toValue = UIColor.green.cgColor
+        animation.duration = 0.5
+        animation.autoreverses = true
+        animation.repeatCount = 6
+        animation.isRemovedOnCompletion = false
+        scanLayer.add(animation, forKey: "processing")
+    }
     
 }

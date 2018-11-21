@@ -96,7 +96,7 @@ class FoodClient {
         URLSession.shared.dataTask(with: request) { (data, res, error) in
             
             if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
+                NSLog("Error with urlRequest: \(error)")
                 completion(Response.error(error))
                 return
             }
@@ -170,7 +170,7 @@ class FoodClient {
         URLSession.shared.dataTask(with: urlRequest) { (data, _, error) in
             
             if let error = error {
-                NSLog("Error with urlReqeust: \(error)")
+                NSLog("Error with urlRequest: \(error)")
                 completion(Response.error(error))
                 return
             }

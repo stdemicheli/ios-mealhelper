@@ -11,23 +11,23 @@ import Firebase
 
 
 public protocol BarcodeScannerDelegate: class {
-    func barcodeScanner(_ controller: BarcodeScanner, didChangeStatus status: BarcodeScanner.Status)
+    // func barcodeScanner(_ controller: BarcodeScanner, didChangeStatus status: BarcodeScanner.Status)
     func barcodeScanner(_ controller: BarcodeScanner, didFinishScanningWithCode barcode: String)
     func barcodeScanner(_ controller: BarcodeScanner, didReceiveError error: Error)
-    func barcodeScannerWillDismiss(_ controller: BarcodeScanner)
+    // func barcodeScannerWillDismiss(_ controller: BarcodeScanner)
 }
 
 open class BarcodeScanner {
     
     public enum Status: String {
         case scanning // Scanning, but no barcode yet being detected
-        case processing // Barcode detected and processed
-        case notFound // No barcode found
+        case processing // Barcode detected
     }
     
     // MARK: - Public properties
 
     public weak var delegate: BarcodeScannerDelegate?
+    public var isScanning = true
     
     // MARK: - Private properties
     
@@ -35,8 +35,16 @@ open class BarcodeScanner {
         
     // MARK: - Public
     
+    public func startScanning() {
+        isScanning = true
+    }
+    
+    public func endScanning() {
+        isScanning = false
+    }
+    
     public func detectBarcodes(with buffer: CMSampleBuffer) {
-        delegate?.barcodeScanner(self, didChangeStatus: Status.processing)
+        guard isScanning == true else { return }
         
         // Define options for barcode detector
         let format = VisionBarcodeFormat.all // TODO: restrict format for better performance
@@ -56,24 +64,23 @@ open class BarcodeScanner {
             
             guard let features = features, !features.isEmpty else {
                 NSLog("No barcode detected")
-                self.delegate?.barcodeScanner(self, didChangeStatus: Status.notFound)
                 return
             }
             
             if let barcodeString = features.first?.rawValue {
                 self.delegate?.barcodeScanner(self, didFinishScanningWithCode: barcodeString)
+                self.isScanning = false
                 print(barcodeString)
             }
             
-            self.delegate?.barcodeScanner(self, didChangeStatus: Status.scanning)
         }
     }
     
     public func detectBarcodes(with image: UIImage) {
-        delegate?.barcodeScanner(self, didChangeStatus: Status.processing)
+        guard isScanning == true else { return }
         
         // Define options for barcode detector
-        let format = VisionBarcodeFormat.all
+        let format = VisionBarcodeFormat.all // TODO: restrict format for better performance
         let barcodeOptions = VisionBarcodeDetectorOptions(formats: format)
         
         // Create barcode detector
@@ -90,16 +97,15 @@ open class BarcodeScanner {
             
             guard let features = features, !features.isEmpty else {
                 NSLog("No barcode detected")
-                self.delegate?.barcodeScanner(self, didChangeStatus: Status.notFound)
                 return
             }
             
             if let barcodeString = features.first?.rawValue {
                 self.delegate?.barcodeScanner(self, didFinishScanningWithCode: barcodeString)
+                self.isScanning = false
                 print(barcodeString)
             }
             
-            self.delegate?.barcodeScanner(self, didChangeStatus: Status.scanning)
         }
     }
 

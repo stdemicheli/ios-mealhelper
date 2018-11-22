@@ -22,6 +22,7 @@
 		3DB65F272196200D007AA68A /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F242196200D007AA68A /* HTTPMethod.swift */; };
 		3DB65F282196200D007AA68A /* APIClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F252196200D007AA68A /* APIClient.swift */; };
 		3DB65F292196200D007AA68A /* Response.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DB65F262196200D007AA68A /* Response.swift */; };
+		3DDB4A1C21A774E4007A1B5E /* SwipeableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DDB4A1B21A774E4007A1B5E /* SwipeableViewController.swift */; };
 		3DFEEDAE21A2E85100465FCB /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */; };
 		3DFEEDB021A2FBA300465FCB /* BarcodeScanner.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */; };
 		3E366CC5BED1B159C22D871B /* Pods_Labs8_MealHelper.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5C929C04E5DFBF4768E6A363 /* Pods_Labs8_MealHelper.framework */; };
@@ -107,6 +108,7 @@
 		3DB65F242196200D007AA68A /* HTTPMethod.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = HTTPMethod.swift; path = "Labs8-MealHelper/Networking/HTTPMethod.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F252196200D007AA68A /* APIClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = APIClient.swift; path = "Labs8-MealHelper/Networking/APIClient.swift"; sourceTree = SOURCE_ROOT; };
 		3DB65F262196200D007AA68A /* Response.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Response.swift; path = "Labs8-MealHelper/Networking/Response.swift"; sourceTree = SOURCE_ROOT; };
+		3DDB4A1B21A774E4007A1B5E /* SwipeableViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeableViewController.swift; sourceTree = "<group>"; };
 		3DFEEDAD21A2E85100465FCB /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BarcodeScanner.swift; sourceTree = "<group>"; };
 		41CE98120756C3041BA30512 /* Pods-Labs8-MealHelper.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Labs8-MealHelper.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Labs8-MealHelper/Pods-Labs8-MealHelper.debug.xcconfig"; sourceTree = "<group>"; };
@@ -348,6 +350,7 @@
 				3DFEEDAF21A2FBA300465FCB /* BarcodeScanner.swift */,
 				AC85F3CF219E3524007765CA /* FoodClient.swift */,
 				AC8F0B58219E3AE300E623FB /* MealEntry.xcassets */,
+				3DDB4A1B21A774E4007A1B5E /* SwipeableViewController.swift */,
 			);
 			path = MealEntry;
 			sourceTree = "<group>";
@@ -521,6 +524,7 @@
 				AC85F38D219E0C1D007765CA /* LoginViewController.swift in Sources */,
 				3DB65F282196200D007AA68A /* APIClient.swift in Sources */,
 				AC85F3E7219E3526007765CA /* IngredientsTableViewController.swift in Sources */,
+				3DDB4A1C21A774E4007A1B5E /* SwipeableViewController.swift in Sources */,
 				3D77DD1A219F111B009B21ED /* ProgressIndicator.swift in Sources */,
 				AC85F3DE219E3526007765CA /* FoodClient.swift in Sources */,
 				AC8F0B57219E375300E623FB /* Utils.swift in Sources */,

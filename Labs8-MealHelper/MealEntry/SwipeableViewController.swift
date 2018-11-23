@@ -32,6 +32,7 @@ class SwipableViewController: UIViewController {
     var popupOffset: CGFloat {
         return openHeight - closedHeight
     }
+    var animationDuration = 0.6
     
     private var currentState: State = .intermediate
     private var animationProgress: CGFloat = 0.0
@@ -72,6 +73,12 @@ class SwipableViewController: UIViewController {
         popupView.addGestureRecognizer(panRecognizer)
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let bottomConstant = currentState == .open ? 0 : popupOffset
+        animateInitialPopup(to: bottomConstant)
+    }
+    
     private func setupViews() {
         view.addSubview(overlayView)
         
@@ -86,7 +93,7 @@ class SwipableViewController: UIViewController {
         popupView.trailingAnchor.constraint(equalTo: view.trailingAnchor).isActive = true
         popupView.heightAnchor.constraint(equalToConstant: openHeight).isActive = true
         
-        bottomConstraint = popupView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: openHeight - closedHeight)
+        bottomConstraint = popupView.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: openHeight)
         bottomConstraint.isActive = true
     }
     
@@ -104,18 +111,18 @@ class SwipableViewController: UIViewController {
         case .changed:
             if currentState == .intermediate && !viewIsAnimating {
                 if isSwipingUp {
-                    animateTransitionIfNeeded(to: .open, duration: 1.0)
+                    animateTransitionIfNeeded(to: .open, duration: animationDuration)
                     transitionAnimator?.pauseAnimation()
                     animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                     viewIsAnimating = true
                 } else {
-                    animateTransitionIfNeeded(to: .closed, duration: 1.0)
+                    animateTransitionIfNeeded(to: .closed, duration: animationDuration)
                     transitionAnimator?.pauseAnimation()
                     animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                     viewIsAnimating = true
                 }
             } else if currentState == .open && !viewIsAnimating {
-                animateTransitionIfNeeded(to: .intermediate, duration: 1.0)
+                animateTransitionIfNeeded(to: .intermediate, duration: animationDuration)
                 transitionAnimator?.pauseAnimation()
                 animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                 viewIsAnimating = true
@@ -151,7 +158,7 @@ class SwipableViewController: UIViewController {
     }
     
     private func animateTransitionIfNeeded(to state: State, duration: TimeInterval) {
-        transitionAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1, animations: {
+        transitionAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0, animations: {
             switch state {
             case .open:
                 self.bottomConstraint.constant = 0
@@ -179,6 +186,13 @@ class SwipableViewController: UIViewController {
         }
         
         transitionAnimator?.startAnimation()
+    }
+    
+    private func animateInitialPopup(to constant: CGFloat) {
+        UIView.animate(withDuration: animationDuration) {
+            self.bottomConstraint.constant = constant
+            self.view.layoutIfNeeded()
+        }
     }
     
 }

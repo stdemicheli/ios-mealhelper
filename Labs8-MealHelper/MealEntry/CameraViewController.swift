@@ -60,18 +60,18 @@ class CameraViewController: UIViewController {
         blurView.isUserInteractionEnabled = false
         self.previewView.addSubview(blurView)
         
-        let path = UIBezierPath (
+        let blurViewPath = UIBezierPath (
             roundedRect: blurView.frame,
             cornerRadius: 0)
         
         let scanPathWidth: CGFloat = 300.0
         let scanPath = UIBezierPath(roundedRect: CGRect(x: (view.bounds.width - scanPathWidth) / 2, y: 175.0, width: scanPathWidth, height: 250.0), cornerRadius: 10.0)
         
-        path.append(scanPath)
-        path.usesEvenOddFillRule = true
+        blurViewPath.append(scanPath)
+        blurViewPath.usesEvenOddFillRule = true
         
         let maskLayer = CAShapeLayer()
-        maskLayer.path = path.cgPath
+        maskLayer.path = blurViewPath.cgPath
         maskLayer.fillRule = CAShapeLayerFillRule.evenOdd
         
         
@@ -138,6 +138,7 @@ class CameraViewController: UIViewController {
         } else if let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) {
             return device
         } else {
+            // TODO: Handle absence of appropriate capture device (e.g. alert view "No camera available")
             fatalError("Missing expected back camera device")
         }
     }

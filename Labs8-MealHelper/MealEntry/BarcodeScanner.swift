@@ -80,7 +80,6 @@ open class BarcodeScanner {
             self.scannedBarcodes.append(barcodeString)
             self.delegate?.barcodeScanner(self, didFinishScanningWithCode: barcodeString)
             self.isScanning = false
-            
         }
     }
     

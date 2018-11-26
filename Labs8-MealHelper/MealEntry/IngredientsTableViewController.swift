@@ -112,15 +112,28 @@ class IngredientsTableViewController: FoodsTableViewController<Ingredient, FoodT
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         // On row click, show a ingredient detail modal
-        let ingredientDetailVC = IngredientDetailViewController()
-        ingredientDetailVC.modalPresentationStyle = .overFullScreen
-        ingredientDetailVC.delegate = self // We use a delegation pattern so the dismissing detailVC can handle selection of an ingredient
-        ingredientDetailVC.delegateIndexPath = indexPath // Select ingredient at indexPath
+//        let ingredientDetailVC = IngredientDetailViewController()
+//        ingredientDetailVC.modalPresentationStyle = .overFullScreen
+//        ingredientDetailVC.delegate = self // We use a delegation pattern so the dismissing detailVC can handle selection of an ingredient
+//        ingredientDetailVC.delegateIndexPath = indexPath // Select ingredient at indexPath
+//
+//        let ingredient = foods?[indexPath.row]
+//        ingredientDetailVC.ingredient = ingredient
+//
+//        present(ingredientDetailVC, animated: true, completion: nil)
+        let swipeVC = SwipableViewController()
+        swipeVC.view.translatesAutoresizingMaskIntoConstraints = false
+        let titleLabel = UILabel()
+        titleLabel.text = "Gagi"
+        titleLabel.textAlignment = .center
+        titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
+        addChild(swipeVC)
+        swipeVC.didMove(toParent: self)
+        tableView.addSubview(swipeVC.view)
+        swipeVC.popupView.addSubview(titleLabel)
         
-        let ingredient = foods?[indexPath.row]
-        ingredientDetailVC.ingredient = ingredient
-        
-        present(ingredientDetailVC, animated: true, completion: nil)
+        swipeVC.view.fillSuperview()
+        tableView.bringSubviewToFront(swipeVC.view)
     }
     
     override func actionWhenNoItemsSelected() {

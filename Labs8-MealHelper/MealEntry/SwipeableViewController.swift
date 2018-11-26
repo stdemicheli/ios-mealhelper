@@ -9,46 +9,42 @@
 import UIKit
 import UIKit.UIGestureRecognizerSubclass
 
-private enum State {
-    case closed
-    case intermediate
-    case open
-}
-
-extension State {
-    var opposite: State {
-        switch self {
-        case .open: return .intermediate
-        case .closed: return .intermediate
-        case .intermediate: return .open
-        }
-    }
+@objc protocol SwipeableViewControllerDelegate: class {
+    @objc optional func didPresentSwipeableView(_ swipeableView: SwipableViewController)
+    @objc optional func willDismissSwipeableView(_ swipeableView: SwipableViewController)
 }
 
 class SwipableViewController: UIViewController {
     
+    enum State {
+        case closed
+        case intermediate
+        case open
+    }
+    
+    weak var delegate: SwipeableViewControllerDelegate?
     var openHeight: CGFloat = 650.0
     var closedHeight: CGFloat = 200.0
     var popupOffset: CGFloat {
         return openHeight - closedHeight
     }
     var animationDuration = 0.6
+    var currentState: State = .intermediate
     
-    private var currentState: State = .intermediate
-    private var animationProgress: CGFloat = 0.0
-    private var viewIsAnimating = false
-    
-    private lazy var popupView: UIView = {
+    lazy var popupView: UIView = {
         let view = UIView()
         view.translatesAutoresizingMaskIntoConstraints = false
-        view.backgroundColor = .gray
+        view.backgroundColor = .white
         view.layer.maskedCorners = [.layerMaxXMinYCorner, .layerMinXMinYCorner]
         view.layer.shadowColor = UIColor.black.cgColor
         view.layer.shadowOpacity = 0.3
         view.layer.shadowRadius = 30
-        view.layer.cornerRadius = 10.0
+        view.layer.cornerRadius = 15.0
         return view
     }()
+    
+    private var animationProgress: CGFloat = 0.0
+    private var viewIsAnimating = false
     
     private lazy var overlayView: UIView = {
         let view = UIView()
@@ -111,18 +107,18 @@ class SwipableViewController: UIViewController {
         case .changed:
             if currentState == .intermediate && !viewIsAnimating {
                 if isSwipingUp {
-                    animateTransitionIfNeeded(to: .open, duration: animationDuration)
+                    animateTransition(to: .open, duration: animationDuration)
                     transitionAnimator?.pauseAnimation()
                     animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                     viewIsAnimating = true
                 } else {
-                    animateTransitionIfNeeded(to: .closed, duration: animationDuration)
+                    animateTransition(to: .closed, duration: animationDuration)
                     transitionAnimator?.pauseAnimation()
                     animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                     viewIsAnimating = true
                 }
             } else if currentState == .open && !viewIsAnimating {
-                animateTransitionIfNeeded(to: .intermediate, duration: animationDuration)
+                animateTransition(to: .intermediate, duration: animationDuration)
                 transitionAnimator?.pauseAnimation()
                 animationProgress = transitionAnimator?.fractionComplete ?? 0.0
                 viewIsAnimating = true
@@ -157,9 +153,9 @@ class SwipableViewController: UIViewController {
         }
     }
     
-    private func animateTransitionIfNeeded(to state: State, duration: TimeInterval) {
+    private func animateTransition(to targetState: State, duration: TimeInterval) {
         transitionAnimator = UIViewPropertyAnimator(duration: duration, dampingRatio: 1.0, animations: {
-            switch state {
+            switch targetState {
             case .open:
                 self.bottomConstraint.constant = 0
                 self.overlayView.alpha = 0.3
@@ -175,9 +171,15 @@ class SwipableViewController: UIViewController {
         transitionAnimator?.addCompletion { position in
             switch position {
             case .start:
-                self.currentState = state.opposite // state == .closed ? .intermediate : state.opposite
+                self.currentState = targetState.opposite // state == .closed ? .intermediate : state.opposite
             case .end:
-                self.currentState = state // Update state when animation ended
+                if targetState == .closed { // When target state is closed, then remove the view
+                    self.willMove(toParent: nil)
+                    self.view.removeFromSuperview()
+                    self.removeFromParent()
+                }
+                
+                self.currentState = targetState // Update state when animation ended
             case .current:
                 ()
             }
@@ -205,4 +207,14 @@ class InstantPanGestureRecognizer: UIPanGestureRecognizer {
         self.state = UIGestureRecognizer.State.began
     }
     
+}
+
+extension SwipableViewController.State {
+    var opposite: SwipableViewController.State {
+        switch self {
+        case .open: return .intermediate
+        case .closed: return .intermediate
+        case .intermediate: return .open
+        }
+    }
 }

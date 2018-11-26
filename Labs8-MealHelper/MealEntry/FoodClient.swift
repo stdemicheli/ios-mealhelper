@@ -108,6 +108,7 @@ class FoodClient {
             }
             
             do {
+                // TODO: - Handle fetches that didn't return any results (returns a different json)
                 let usdaIngredients = try JSONDecoder().decode(UsdaIngredients.self, from: data)
                 let ingredients: [Ingredient] = self.convertToIngredient(usdaIngredients.list.item)
                 completion(Response.success(ingredients))
@@ -120,7 +121,7 @@ class FoodClient {
         }.resume()
     }
     
-    // MARK: - Private
+    // MARK: - Generic methods
     
     private func fetch<Resource: Codable>(from url: URL, using session: URLSession = URLSession.shared, completion: @escaping ((Response<Resource>) -> ())) {
         session.dataTask(with: url) { (data, res, error) in
@@ -191,6 +192,8 @@ class FoodClient {
             }
         }.resume()
     }
+    
+    // MARK: - Private methods
     
     private func url(with baseUrl: URL, pathComponents: [String]) -> URL {
         var url = baseUrl

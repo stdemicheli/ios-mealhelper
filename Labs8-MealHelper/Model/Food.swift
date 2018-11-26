@@ -8,6 +8,8 @@
 
 import Foundation
 
+// MARK: - MealHelper
+
 struct Meal: Codable {
     
     init(mealTime: String, experience: String, date: String, userId: Int) {
@@ -108,6 +110,8 @@ struct Nutrient: Codable {
     }
     
 }
+
+// MARK: - USDA
 
 struct UsdaIngredients: Codable {
     

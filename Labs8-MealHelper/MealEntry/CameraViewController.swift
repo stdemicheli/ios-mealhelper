@@ -15,10 +15,9 @@ class CameraViewController: UIViewController {
     // MARK: - Properties
     private var captureSession: AVCaptureSession!
     private var previewView = CameraPreview()
-    private lazy var vision = Vision.vision() // Firebase vision API
     private var barcodeScanner = BarcodeScanner()
     private var scanLayer = CAShapeLayer()
-    private var blurView = UIVisualEffectView (effect: UIBlurEffect (style: UIBlurEffect.Style.extraLight))
+    private var blurView = UIVisualEffectView (effect: UIBlurEffect (style: UIBlurEffect.Style.dark))
     
     // MARK: - Life Cycle
     
@@ -31,7 +30,6 @@ class CameraViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        // Call startRunning() to let data flow from inputs to outputs
         captureSession.startRunning()
     }
     
@@ -52,7 +50,6 @@ class CameraViewController: UIViewController {
     
     private func setupCapture() {
         // Setup: AVCaptureDeviceInput --> AVCaptureSession --> AVCaptureOutput (i.e. AVCaptureVideoPreviewLayer & AVCaptureVideoDataOutput)
-        
         
         // VideoPreviewLayer - Sets up a blur view with a see-through rectangle in the middle in which the barcode should be scanned
         view.addSubview(previewView)
@@ -129,13 +126,12 @@ class CameraViewController: UIViewController {
         
         self.captureSession = captureSession
         
-        //subPreviewView.videoPreviewLayer.session = captureSession
         previewView.videoPreviewLayer.videoGravity = AVLayerVideoGravity.resizeAspectFill // Fills entire screen
         
         previewView.videoPreviewLayer.session = captureSession
     }
     
-    // Camera's nowadays have a variety of cameras, so this function takes the best camera on the device
+    // Choose the best camera on the device
     private func bestCamera() -> AVCaptureDevice {
         if let device = AVCaptureDevice.default(.builtInDualCamera, for: .video, position: .back) {
             return device
@@ -144,6 +140,17 @@ class CameraViewController: UIViewController {
         } else {
             fatalError("Missing expected back camera device")
         }
+    }
+    
+    private func animateScanLayerAsProcessing() {
+        let animation = CABasicAnimation(keyPath: "strokeColor")
+        animation.fromValue = UIColor.white.cgColor
+        animation.toValue = UIColor.green.cgColor
+        animation.duration = 0.5
+        animation.autoreverses = true
+        animation.repeatCount = 6
+        animation.isRemovedOnCompletion = false
+        scanLayer.add(animation, forKey: "processing")
     }
     
 }
@@ -155,7 +162,7 @@ extension CameraViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
     func captureOutput(_ output: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
         // Detect video frames with Firebase MLVisionBarcodeModel
         if barcodeScanner.isScanning {
-            barcodeScanner.detectBarcodes(with: sampleBuffer)
+            barcodeScanner.detectBarcodes(with: .buffer(sampleBuffer))
         }
     }
     
@@ -204,13 +211,32 @@ extension CameraViewController: BarcodeScannerDelegate {
         FoodClient.shared.fetchUsdaIngredients(with: barcode) { (response) in
             switch response {
             case .success(let ingredients):
-                self.scanLayer.strokeColor = UIColor.green.cgColor
-                print(ingredients.first?.name)
-                self.barcodeScanner.startScanning()
+                DispatchQueue.main.async {
+                    self.scanLayer.strokeColor = UIColor.green.cgColor
+                    self.barcodeScanner.startScanning()
+                    let swipeVC = SwipableViewController()
+                    swipeVC.view.translatesAutoresizingMaskIntoConstraints = false
+                    let titleLabel = UILabel()
+                    if let name = ingredients.first?.name {
+                        titleLabel.text = name
+                        titleLabel.textAlignment = .center
+                        titleLabel.font = UIFont.boldSystemFont(ofSize: 20.0)
+                    }
+                    self.addChild(swipeVC)
+                    swipeVC.didMove(toParent: self)
+                    self.view.addSubview(swipeVC.view)
+                    swipeVC.popupView.addSubview(titleLabel)
+                    
+                    swipeVC.view.fillSuperview()
+                    titleLabel.anchor(top: swipeVC.popupView.topAnchor, leading: swipeVC.popupView.leadingAnchor, bottom: nil, trailing: swipeVC.popupView.trailingAnchor)
+                }
+            
             case .error(let error):
-                self.scanLayer.strokeColor = UIColor.red.cgColor
-                self.barcodeScanner.startScanning()
-                print(error)
+                DispatchQueue.main.async {
+                    self.scanLayer.strokeColor = UIColor.red.cgColor
+                    self.barcodeScanner.startScanning()
+                    print(error)
+                }
             }
         }
     }
@@ -219,19 +245,8 @@ extension CameraViewController: BarcodeScannerDelegate {
         // Handle error
     }
     
-}
-
-extension CameraViewController {
-    
-    private func animateScanLayerAsProcessing() {
-        let animation = CABasicAnimation(keyPath: "strokeColor")
-        animation.fromValue = UIColor.white.cgColor
-        animation.toValue = UIColor.green.cgColor
-        animation.duration = 0.5
-        animation.autoreverses = true
-        animation.repeatCount = 6
-        animation.isRemovedOnCompletion = false
-        scanLayer.add(animation, forKey: "processing")
+    private func display(_ ingredientDetails: UIViewController) {
+        
     }
     
 }

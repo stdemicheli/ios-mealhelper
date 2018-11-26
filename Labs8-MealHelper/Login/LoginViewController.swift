@@ -251,11 +251,6 @@ class LoginViewController: UIViewController
     
     @objc private func handleAuthentication()
     {
-        // TODO: To be deleted:
-        let homeVC = HomeViewController()
-        self.present(homeVC, animated: true, completion: nil)
-        return
-        
         guard let email = emailTextField.text, let password = passwordTextField.text else {
             showAlert(with: "Please fill in the email and password fields.")
             return
@@ -284,10 +279,9 @@ class LoginViewController: UIViewController
             
             DispatchQueue.main.async {
                 switch response {
-                case .success(let email):
-                    print("Login with \(email) completed")
-                    // TODO: Return user object instead of only email and save userId to UserDefaults:
-                    // UserDefaults().setIsLoggedIn(value: true, userId: <#T##Int#>)
+                case .success(let userId):
+                    print("Login with \(userId.id!) completed")
+                     UserDefaults().setIsLoggedIn(value: true, userId: userId.id!)
                     let homeVC = HomeViewController()
                     self.present(homeVC, animated: true, completion: nil)
                 case .error(let error):
@@ -306,14 +300,14 @@ class LoginViewController: UIViewController
             return
         }
         
-        let user = User(email: email, password: password, zip: zipCodeInt, healthCondition: healthCondition)
+        let user = User(email: email, password: password, zip: zipCodeInt, healthCondition: healthCondition, id: nil)
         authButton.startLoading()
         APIClient.shared.register(with: user) { (response) in
             
             DispatchQueue.main.async {
                 switch response {
-                case .success(let id):
-                    print("success: \(id)")
+                case .success(let userId):
+                    UserDefaults().setIsLoggedIn(value: true, userId: userId.id!)
                     let homeVC = HomeViewController()
                     self.present(homeVC, animated: true, completion: nil)
                 case .error(let error):

@@ -33,7 +33,6 @@ struct Meal: Codable {
         case date
         case userId = "user_id"
     }
-    
 }
 
 struct Recipe: Codable {
@@ -64,7 +63,6 @@ struct Recipe: Codable {
         case userId = "user_id"
         case ingredientId = "ingredients_id"
     }
-    
 }
 
 struct Ingredient: Codable {
@@ -90,7 +88,6 @@ struct Ingredient: Codable {
         case nutrientIds = "nutrients_id"
         case recipeId = "recipe_id"
     }
-    
 }
 
 struct Nutrient: Codable {
@@ -108,7 +105,6 @@ struct Nutrient: Codable {
         case value
         case gm
     }
-    
 }
 
 // MARK: - USDA
@@ -140,7 +136,6 @@ struct UsdaIngredients: Codable {
             }
         }
     }
-    
 }
 
 struct UsdaNutrient: Codable {
@@ -173,7 +168,5 @@ struct UsdaNutrient: Codable {
             case qty
             case value
         }
-        
     }
-    
 }

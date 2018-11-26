@@ -15,19 +15,13 @@ class MealCell: UICollectionViewCell {
             setupViews()
         }
     }
-    // TODO: To be deleted
-    private lazy var nameLabel: UILabel = {
-        let label = UILabel()
-        label.translatesAutoresizingMaskIntoConstraints = false
-        label.font = UIFont.systemFont(ofSize: 17.0)
-        label.textAlignment = .center
-        return label
-    }()
+   
+    
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-        backgroundColor = .red
+        backgroundColor = UIColor.init(white: 0.9, alpha: 1)
         setupViews()
     }
     
@@ -36,12 +30,7 @@ class MealCell: UICollectionViewCell {
     }
     
     private func setupViews() {
-        // TODO: To be deleted
-        addSubview(nameLabel)
-        
-        nameLabel.fillSuperview()
-        
-        nameLabel.text = meal?.mealTime
+
     }
     
 }
